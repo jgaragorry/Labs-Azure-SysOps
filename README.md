@@ -9,69 +9,85 @@ Diseñar una arquitectura en Azure donde:
 
 ## 📋 Requisitos Técnicos
 ### Componentes obligatorios
-```mermaid
-graph TD
-    A[VNet] --> B[Subred Servidores]
-    A --> C[Subred Clientes]
-    B --> D[NSG-Servidores]
-    C --> E[NSG-Clientes]
-    D --> F[Servidor NFS]
-    E --> G[VM Cliente 1]
-    E --> H[VM Cliente 2]
-    F --> I[Disco OS]
-    F --> J[Disco Datos]
-    J --> K[/File System /apps]
-Especificaciones técnicas
-Componente	Configuración Mínima
-Servidor NFS	Ubuntu 20.04, 2 vCPU, 4GB RAM
-VM Cliente	Ubuntu 18.04+, 1 vCPU, 2GB RAM
-Discos	OS: 32GB (Premium SSD), Datos: 64GB+
-Redes	VNet: 10.0.0.0/16, Subredes: /24
-🛠️ Herramientas Necesarias
-Diseño de diagramas: draw.io (diagrams.net)
+![Diagrama de referencia](https://raw.githubusercontent.com/jgaragorry/Labs-Azure-SysOps/main/assets/nfs-diagram.png)
 
-Gestión Azure: Portal Azure o Azure CLI
+**Leyenda del diagrama:**
+- **VNet** con 2 subredes: servidores (10.0.1.0/24) y clientes (10.0.2.0/24)
+- **NSG-Servidores**: Grupo de seguridad para servidor NFS
+- **NSG-Clientes**: Grupo de seguridad para VMs cliente
+- **Servidor NFS**: VM Ubuntu con disco de datos para /apps
+- **VMs Cliente**: Al menos 2 VMs Linux montando el NFS
 
-Conexión SSH: PuTTY (Windows) o Terminal (Linux/macOS)
+### Especificaciones técnicas mínimas
+| Componente       | Configuración Mínima                     |
+|------------------|------------------------------------------|
+| **Servidor NFS** | Ubuntu 20.04, 2 vCPU, 4GB RAM           |
+| **VM Cliente**   | Ubuntu 18.04+, 1 vCPU, 2GB RAM          |
+| **Discos**       | OS: 32GB (Premium SSD), Datos: 64GB+    |
+| **Redes**        | VNet: 10.0.0.0/16, Subredes: /24        |
 
-📝 Fases del Laboratorio
-1. Diseño de la Arquitectura (draw.io)
-markdown
+## 🛠️ Herramientas Necesarias
+1. **Diseño de diagramas**: 
+   - [draw.io](https://app.diagrams.net/) (recomendado)
+   - O Microsoft Visio
+2. **Gestión Azure**: 
+   - Portal Azure: https://portal.azure.com
+   - Azure CLI (opcional)
+3. **Conexión SSH**: 
+   - Windows: [PuTTY](https://www.putty.org/)
+   - Linux/macOS: Terminal integrada
+
+## 📝 Fases del Laboratorio
+
+### 1. Diseño de la Arquitectura (draw.io)
+```markdown
 [ ] Crear diagrama que incluya:
   - VNet con 2 subredes: `servidores` y `clientes`
   - Servidor NFS con 2 discos (OS + Datos)
   - Al menos 2 VMs cliente
   - NSGs aplicados a cada subred
-  - Flechas de conexión NFS (puerto 2049)
+  - Conexiones NFS (puerto 2049)
   - Leyendas explicativas para cada componente
 2. Configuración Clave
-Reglas NSG Mínimas:
+Reglas NSG Mínimas para servidor NFS:
 
-Dirección	Prioridad	Nombre	Puerto	Origen/Destino
-Entrada	100	Allow-SSH	22	Internet
-Entrada	200	Allow-NFS	2049	VNet
-Salida	100	Deny-All	*	Internet
-Montaje en Clientes:
+Dirección	Prioridad	Nombre	Protocolo	Puerto	Origen
+Entrada	100	Allow-SSH	TCP	22	Internet
+Entrada	110	Allow-NFS	TCP	2049	10.0.2.0/24
+Salida	100	Allow-All	Cualquiera	*	Internet
+Comandos para servidor NFS:
 
 bash
-sudo mount -t nfs -o ro <IP_NFS>:/apps /mnt/apps
+# Crear directorio apps
+sudo mkdir /apps
+
+# Instalar servidor NFS
+sudo apt install nfs-kernel-server
+
+# Configurar exportación (solo lectura)
+echo "/apps 10.0.2.0/24(ro,sync,no_subtree_check)" | sudo tee -a /etc/exports
+sudo exportfs -arv
 3. Validación Funcional
-markdown
-[ ] Comprobar acceso solo lectura:
-  touch /mnt/apps/test.txt  # Debe fallar
-  cat /mnt/apps/app.txt     # Debe funcionar
+bash
+# En cliente Linux:
+sudo mount -t nfs -o ro <IP_NFS>:/apps /mnt/apps
+
+# Pruebas:
+echo "test" > /mnt/apps/test.txt  # Debe FALLAR (solo lectura)
+cat /mnt/apps/aplicacion.txt      # Debe funcionar (lectura)
 📤 Entregables
-Enlace público al diagrama (.drawio o PNG)
-(Usar función "Exportar > Enlace público" en draw.io)
+Enlace público al diagrama (usar función "Publicar" en draw.io)
 
-Explicación técnica (en WhatsApp):
+Explicación técnica en WhatsApp con formato:
 
-markdown
-Mi diseño cumple con:
-✅ Aislamiento de subredes
-✅ Reglas NSG específicas
-✅ Acceso solo lectura verificado
-El componente más crítico: [Explica tu elección]
+text
+[LAB NFS] - Tu Nombre
+Diagrama: [URL]
+Cumplimiento: 
+- Componentes: 5/5 
+- NSGs: Reglas NFS y SSH configuradas
+- Dificultad: [Breve descripción]
+Componente crítico: NSG por su rol en la seguridad
 ⏱️ Tiempo Estimado
 ⏰ 60 minutos (diseño + documentación)
 
@@ -84,11 +100,14 @@ Explicación técnica	15%
 Originalidad	10%
 💡 Tips Esenciales
 bash
-# Comando para probar conexión NFS:
+# Comando para probar conexión NFS desde cliente:
 showmount -e 10.0.1.4  # Reemplazar con IP del servidor
 
 # Verificar montaje:
 df -hT | grep nfs
+
+# Solución error "Access denied":
+sudo chown nobody:nogroup /apps
 📚 Recursos Adicionales
 Configurar NFS en Ubuntu
 
@@ -96,26 +115,25 @@ Azure NSGs Docs
 
 Plantilla draw.io inicial
 
-📲 Cómo Compartir en WhatsApp
+📲 Instrucciones para Compartir
 Exporta tu diagrama como PNG o comparte enlace público
 
-Publica en el grupo con formato:
+Publica en el grupo de WhatsApp con este formato:
 
 text
 [LAB NFS] - Tu Nombre
-Diagrama: [ENLACE/ARCHIVO]
+Diagrama: [ENLACE]
 Explicación: 
 • Cumplimiento: [X]/5 componentes
 • Reglas NSG: [Sí/No]
-• Dificultad encontrada: [Breve descripción]
+• Dificultad: [Breve descripción]
 ⚠️ Fecha Límite: Domingo 23:59 PM
-🏆 Premio simbólico: Los 3 mejores diseños serán destacados como "Azure Architects" del mes!
+🏆 Reconocimiento: Los 3 mejores diseños serán destacados como "Azure Architects"!
+
+📌 Ejemplo de Diagrama
+https://raw.githubusercontent.com/jgaragorry/Labs-Azure-SysOps/main/assets/nfs-diagram.png
+
+💬 Nota Final:
+¡Creatividad vs funcionalidad! El equilibrio perfecto gana. ¿Quién será el top designer?
 
 text
-
-## 📌 Ejemplo de Diagrama (Referencia Visual)
-![Diagrama NFS Azure](https://i.imgur.com/Y7bklQp.png)
-
-```markdown
-💬 **Nota Final:**  
-¡Creatividad vs funcionalidad! El equilibrio perfecto gana. ¿Quién será el top designer?
