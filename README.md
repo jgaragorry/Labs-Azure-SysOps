@@ -1,6 +1,6 @@
 # 🚀 Laboratorio Azure: Infraestructura con Servidor NFS
 
-Este laboratorio guía la implementación de una arquitectura NFS en Azure, ideal para entornos educativos o pruebas de infraestructura. Aprenderás a configurar un servidor NFS en Linux, aplicar reglas de seguridad con NSGs y validar el acceso desde múltiples clientes en modo solo lectura.
+Este laboratorio guía el diseño de una arquitectura en Azure que permita compartir aplicaciones vía NFS desde un servidor Linux hacia múltiples clientes en modo solo lectura. El objetivo principal es que el participante proponga una solución técnica clara, segura y funcional mediante un diagrama bien estructurado.
 
 ---
 
@@ -12,15 +12,17 @@ Este laboratorio guía la implementación de una arquitectura NFS en Azure, idea
 | 📦 Tecnología          | NFS sobre Ubuntu                   |
 | 🧠 Nivel               | Intermedio                         |
 | ⏱️ Duración Estimada   | 60 minutos                         |
-| 📁 Entregable          | Diagrama + Validación funcional    |
+| 📁 Entregable          | Diagrama técnico + validación      |
 
 ---
 
 ## 🎯 Objetivo
 
-- Implementar **1 servidor Linux** que comparta aplicaciones vía NFS
-- Conectar **múltiples VMs cliente Linux** en modo **solo lectura**
-- Identificar componentes críticos y aplicar configuraciones de seguridad
+Diseñar una arquitectura en Azure que permita compartir aplicaciones vía NFS desde un servidor Linux hacia múltiples clientes en modo solo lectura. El enfoque principal del laboratorio es:
+
+- Crear un diagrama técnico que represente la infraestructura propuesta
+- Identificar los componentes clave y sus configuraciones de red y seguridad
+- Entregar el diseño como evidencia de comprensión arquitectónica
 
 ---
 
@@ -110,12 +112,19 @@ cat /mnt/apps/aplicacion.txt         # Debe funcionar (lectura)
 
 ---
 
+## 📤 Entregables
+
+- Diagrama técnico publicado desde draw.io
+- Validación funcional documentada (comandos y resultados)
+
+---
+
 ## 🏆 Criterios de Evaluación
 
 | Criterio               | Puntos |
 |:-----------------------|:------:|
 | Componentes mínimos    | 30%    |
-| Reglas seguridad NSG   | 25%    |
+| Seguridad aplicada     | 25%    |
 | Claridad del diagrama  | 20%    |
 | Explicación técnica    | 15%    |
 | Originalidad           | 10%    |
@@ -142,25 +151,6 @@ sudo chown nobody:nogroup /apps
 - [Configurar NFS en Ubuntu](https://ubuntu.com/server/docs/service-nfs)
 - [Documentación Azure NSGs](https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview)
 - [Plantilla draw.io inicial](https://app.diagrams.net/)
-
----
-
-## 📲 Instrucciones para Compartir
-
-Exporta tu diagrama como PNG o comparte enlace público
-
-Publica en el grupo de WhatsApp con este formato:
-
-```text
-[LAB NFS] - Tu Nombre
-Diagrama: [ENLACE]
-Explicación: 
-• Cumplimiento: [X]/5 componentes
-• Reglas NSG: [Sí/No]
-• Dificultad: [Breve descripción]
-⚠️ Fecha Límite: Domingo 23:59 PM
-🏆 Reconocimiento: Los 3 mejores diseños serán destacados como "Azure Architects"!
-```
 
 ---
 
