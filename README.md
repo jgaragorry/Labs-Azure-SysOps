@@ -49,9 +49,8 @@ Diseñar una arquitectura en Azure donde:
   - Conexiones NFS (puerto 2049)
   - Leyendas explicativas para cada componente
 ```
-2. Configuración Clave
-Reglas NSG Mínimas para servidor NFS:
-
+### 2. Configuración Clave Reglas NSG Mínimas para servidor NFS:
+```markdown
 Dirección	Prioridad	Nombre	Protocolo	Puerto	Origen
 Entrada	100	Allow-SSH	TCP	22	Internet
 Entrada	110	Allow-NFS	TCP	2049	10.0.2.0/24
@@ -59,31 +58,48 @@ Salida	100	Allow-All	Cualquiera	*	Internet
 Comandos para servidor NFS:
 ```
 
-```
+```markdown
 # Crear directorio apps
+```
 ```bash
 sudo mkdir /apps
 ```
+```markdown
 # Instalar servidor NFS
+```
+```bash
 sudo apt install nfs-kernel-server
-
+```
+```markdown
 # Configurar exportación (solo lectura)
+```
+```bash
 echo "/apps 10.0.2.0/24(ro,sync,no_subtree_check)" | sudo tee -a /etc/exports
 sudo exportfs -arv
+```
+```markdown
 3. Validación Funcional
-bash
+```
+```markdown
 # En cliente Linux:
+```
+```bash
 sudo mount -t nfs -o ro <IP_NFS>:/apps /mnt/apps
-
+```
+```markdown
 # Pruebas:
+```
+```bash
 echo "test" > /mnt/apps/test.txt  # Debe FALLAR (solo lectura)
 cat /mnt/apps/aplicacion.txt      # Debe funcionar (lectura)
+```
+```markdown
 📤 Entregables
 Enlace público al diagrama (usar función "Publicar" en draw.io)
 
 Explicación técnica en WhatsApp con formato:
-
-text
+```
+```text
 [LAB NFS] - Tu Nombre
 Diagrama: [URL]
 Cumplimiento: 
