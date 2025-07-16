@@ -110,25 +110,6 @@ cat /mnt/apps/aplicacion.txt         # Debe funcionar (lectura)
 
 ---
 
-## 📤 Entregables
-
-- Enlace público al diagrama (usar función "Publicar" en draw.io)
-- Explicación técnica en WhatsApp con el siguiente formato:
-
-```text
-[LAB NFS] - Tu Nombre
-Diagrama: [URL]
-Cumplimiento: 
-- Componentes: 5/5 
-- NSGs: Reglas NFS y SSH configuradas
-- Dificultad: [Breve descripción]
-Componente crítico: NSG por su rol en la seguridad
-⏱️ Tiempo Estimado
-⏰ 60 minutos (diseño + documentación)
-```
-
----
-
 ## 🏆 Criterios de Evaluación
 
 | Criterio               | Puntos |
