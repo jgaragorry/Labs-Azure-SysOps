@@ -59,17 +59,24 @@ Diseñar una arquitectura en Azure donde:
   - NSGs aplicados a cada subred
   - Conexiones NFS (puerto 2049)
   - Leyendas explicativas para cada componente
+```
 
-2️⃣ Configuración Clave
-🔐 Reglas NSG mínimas para servidor NFS
+---
 
+### 2️⃣ Configuración Clave
+
+#### 🔐 Reglas NSG mínimas para servidor NFS
+
+```markdown
 Dirección    Prioridad    Nombre       Protocolo    Puerto    Origen
 Entrada      100          Allow-SSH    TCP          22        Internet
 Entrada      110          Allow-NFS    TCP          2049      10.0.2.0/24
 Salida       100          Allow-All    Cualquiera   *         Internet
+```
 
-🧰 Comandos para configurar el servidor NFS
+#### 🧰 Comandos para configurar el servidor NFS
 
+```bash
 # Crear directorio apps
 sudo mkdir /apps
 
@@ -79,22 +86,30 @@ sudo apt install nfs-kernel-server
 # Configurar exportación (solo lectura)
 echo "/apps 10.0.2.0/24(ro,sync,no_subtree_check)" | sudo tee -a /etc/exports
 sudo exportfs -arv
+```
 
-3️⃣ Validación Funcional
+---
 
+### 3️⃣ Validación Funcional
+
+```bash
 # En cliente Linux:
 sudo mount -t nfs -o ro <IP_NFS>:/apps /mnt/apps
 
 # Pruebas:
 echo "test" > /mnt/apps/test.txt      # Debe FALLAR (solo lectura)
 cat /mnt/apps/aplicacion.txt         # Debe funcionar (lectura)
+```
 
+---
 
-📤 Entregables
+## 📤 Entregables
+
 Enlace público al diagrama (usar función "Publicar" en draw.io)
 
 Explicación técnica en WhatsApp con formato:
 
+```text
 [LAB NFS] - Tu Nombre
 Diagrama: [URL]
 Cumplimiento: 
@@ -104,17 +119,25 @@ Cumplimiento:
 Componente crítico: NSG por su rol en la seguridad
 ⏱️ Tiempo Estimado
 ⏰ 60 minutos (diseño + documentación)
+```
 
-🏆 Criterios de Evaluación
+---
 
-Criterio	Puntos
-Componentes mínimos	30%
-Reglas seguridad NSG	25%
-Claridad del diagrama	20%
-Explicación técnica	15%
-Originalidad	10%
-💡 Tips Esenciales
+## 🏆 Criterios de Evaluación
 
+| Criterio               | Puntos |
+|------------------------|--------|
+| Componentes mínimos    | 30%    |
+| Reglas seguridad NSG   | 25%    |
+| Claridad del diagrama  | 20%    |
+| Explicación técnica    | 15%    |
+| Originalidad           | 10%    |
+
+---
+
+## 💡 Tips Esenciales
+
+```bash
 # Comando para probar conexión NFS desde cliente:
 showmount -e 10.0.1.4  # Reemplazar con IP del servidor
 
@@ -123,19 +146,25 @@ df -hT | grep nfs
 
 # Solución error "Access denied":
 sudo chown nobody:nogroup /apps
+```
 
-📚 Recursos Adicionales
-Configurar NFS en Ubuntu
+---
 
-Documentación Azure NSGs
+## 📚 Recursos Adicionales
 
-Plantilla draw.io inicial
+- [Configurar NFS en Ubuntu](https://ubuntu.com/server/docs/service-nfs)
+- [Documentación Azure NSGs](https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview)
+- [Plantilla draw.io inicial](https://app.diagrams.net/)
 
-📲 Instrucciones para Compartir
+---
+
+## 📲 Instrucciones para Compartir
+
 Exporta tu diagrama como PNG o comparte enlace público
 
 Publica en el grupo de WhatsApp con este formato:
 
+```text
 [LAB NFS] - Tu Nombre
 Diagrama: [ENLACE]
 Explicación: 
@@ -144,9 +173,16 @@ Explicación:
 • Dificultad: [Breve descripción]
 ⚠️ Fecha Límite: Domingo 23:59 PM
 🏆 Reconocimiento: Los 3 mejores diseños serán destacados como "Azure Architects"!
+```
 
-📌 Ejemplo de Diagrama
+---
 
-💬 Nota Final
-¡Creatividad vs funcionalidad! El equilibrio perfecto gana. ¿Quién será el top designer?
+## 📌 Ejemplo de Diagrama
 
+![Ejemplo](https://raw.githubusercontent.com/jgaragorry/Labs-Azure-SysOps/main/assets/nfs-diagram.png)
+
+---
+
+## 💬 Nota Final
+
+> ¡Creatividad vs funcionalidad! El equilibrio perfecto gana. ¿Quién será el top designer?
