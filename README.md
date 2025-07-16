@@ -48,6 +48,7 @@ Diseñar una arquitectura en Azure donde:
   - NSGs aplicados a cada subred
   - Conexiones NFS (puerto 2049)
   - Leyendas explicativas para cada componente
+```
 2. Configuración Clave
 Reglas NSG Mínimas para servidor NFS:
 
@@ -56,11 +57,13 @@ Entrada	100	Allow-SSH	TCP	22	Internet
 Entrada	110	Allow-NFS	TCP	2049	10.0.2.0/24
 Salida	100	Allow-All	Cualquiera	*	Internet
 Comandos para servidor NFS:
+```
 
-bash
+```
 # Crear directorio apps
+```bash
 sudo mkdir /apps
-
+```
 # Instalar servidor NFS
 sudo apt install nfs-kernel-server
 
